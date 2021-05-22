@@ -1,0 +1,32 @@
+# Maintainer: dummyx <dummyxa at gmail dot com>
+
+pkgname=vvdec
+pkgver=1.1.1
+pkgrel=1
+pkgdesc="Fraunhofer Versatile Video Decoder (VVdeC)"
+arch=('x86_64')
+url='https://github.com/fraunhoferhhi/vvdec'
+license=('custom')
+depends=('gcc-libs')
+makedepends=('git' 'cmake>=3.12' 'gcc>=7')
+provides=('vvdec')
+conflicts=('vvdec-git')
+source=("vvdec-${pkgver}.tar.gz::https://github.com/fraunhoferhhi/vvdec/archive/v${pkgver}.tar.gz")
+sha256sums=('e943e6fff1e302124b3a912252fc8170454bbd3f6db194c6da941f2b1bb50a31')
+
+build() {
+	cmake -B build -S "${srcdir}/vvdec-${pkgver}" \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DVVDEC_ENABLE_INSTALL:BOOL=ON \
+		-DBUILD_SHARED_LIBS:BOOL=ON \
+		-Wno-dev
+	make -C build
+}
+
+package() {
+	make -C build install
+	cd "${srcdir}/vvdec-${pkgver}"
+	cp -r "install" "$pkgdir/usr"
+	mkdir -p "$pkgdir/usr/share/licenses/vvdec"
+	install -Dm644 "LICENSE.txt" "$pkgdir/usr/share/licenses/vvdec/"
+}
