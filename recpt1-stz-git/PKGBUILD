@@ -1,0 +1,36 @@
+#Maintainer: dummyx <dummyxa at gmail dot com>
+
+pkgname=recpt1-stz-git
+_projectname=recpt1-stz
+pkgver=r51.8fa2339
+pkgrel=1
+pkgdesc="PT1/PT2/PT3 recording tool for Linux (STZ version)"
+arch=('x86_64')
+url='https://github.com/stz2012/recpt1'
+license=('GPL3')
+depends=('libarib25')
+makedepends=('git')
+provides=('recpt1')
+confilicts=('recpt1' 'recpt1-stz')
+source=("${_projectname}"::'git+https://github.com/stz2012/recpt1.git')
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "${_projectname}"
+  ( set -o pipefail
+    git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+build() {
+    cd "${_projectname}"/recpt1
+    ./autogen.sh
+    ./configure --enable-b25
+    make
+}
+
+package() {
+    cd "${_projectname}"/recpt1
+    install -Dm755 recpt1 "${pkgdir}"/usr/bin/recpt1
+}
