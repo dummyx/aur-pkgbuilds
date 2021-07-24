@@ -1,0 +1,14 @@
+pkgbase = px4_drv
+	pkgdesc = Unofficial Linux driver for PLEX PX4/PX5/PX-MLT series ISDB-T/S receivers
+	pkgver = 0.2.1a
+	pkgrel = 1
+	url = https://github.com/nns779/px4_drv
+	arch = x86_64
+	license = GPL2
+	provides = px4_drv
+	source = px4_drv-v0.2.1a.tar.gz::https://github.com/nns779/px4_drv/archive/v0.2.1a.tar.gz
+	source = http://plex-net.co.jp/plex/pxw3u4/pxw3u4_BDA_ver1x64.zip
+	sha256sums = 7a239f1e4559e534c43c1074c8ff96c9ed7680029de040c5bb565e93da10b02c
+	sha256sums = bdf3b4eb84b69ccbacb4ba3df2f59c93c803ef6d3f61e7a90a531c22c301a200
+
+pkgname = px4_drv
