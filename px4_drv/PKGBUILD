@@ -1,0 +1,37 @@
+#Maintainer: dummyx <dummyxa at gmail dot com>
+
+pkgname=px4_drv
+pkgver=0.2.1a
+pkgrel=1
+pkgdesc="Unofficial Linux driver for PLEX PX4/PX5/PX-MLT series ISDB-T/S receivers"
+arch=('x86_64')
+url='https://github.com/nns779/px4_drv'
+license=('GPL2')
+depends=()
+makedepends=()
+provides=('px4_drv')
+confilicts=('px4_drv-git' 'px4_drv-dkms' 'px4_drv-dkms-git')
+source=("${pkgname}-v${pkgver}.tar.gz::${url}/archive/v${pkgver}.tar.gz"
+        'http://plex-net.co.jp/plex/pxw3u4/pxw3u4_BDA_ver1x64.zip')
+sha256sums=('7a239f1e4559e534c43c1074c8ff96c9ed7680029de040c5bb565e93da10b02c'
+            'bdf3b4eb84b69ccbacb4ba3df2f59c93c803ef6d3f61e7a90a531c22c301a200')
+
+prepare() {
+    cd "${srcdir}/${pkgname}-${pkgver}/fwtool"
+    make
+    ./fwtool "$srcdir/pxw3u4_BDA_ver1x64/PXW3U4.sys" it930x-firmware.bin
+}
+
+build() {
+    cd "${srcdir}/${pkgname}-${pkgver}/driver"
+    make
+}
+
+package() {
+    _kernver="$(</usr/src/linux/version)"
+
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    install -Dm644 ./fwtool/it930x-firmware.bin $pkgdir/lib/firmware/it930x-firmware.bin
+    install -Dm644 ./etc/99-px4video.rules $pkgdir/etc/udev/rules.d/99-px4video.rules
+    install -Dm644 ./driver/px4_drv.ko $pkgdir/lib/modules/${_kernver}/misc/px4_drv.ko
+}
